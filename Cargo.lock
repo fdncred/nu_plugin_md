@@ -943,7 +943,7 @@ dependencies = [
 
 [[package]]
 name = "nu_plugin_md"
-version = "0.0.2"
+version = "0.1.0"
 dependencies = [
  "nu-plugin",
  "nu-protocol",
