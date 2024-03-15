@@ -1,20 +1,25 @@
 use nu_plugin::{
     serve_plugin, EngineInterface, EvaluatedCall, LabeledError, MsgPackSerializer, Plugin,
+    PluginCommand, SimplePluginCommand,
 };
 use nu_protocol::{Category, PluginExample, PluginSignature, Span, Spanned, SyntaxShape, Value};
 use termimad::*;
 
-struct Implementation;
+pub struct MdPlugin;
 
-impl Implementation {
-    fn new() -> Self {
-        Self {}
+impl Plugin for MdPlugin {
+    fn commands(&self) -> Vec<Box<dyn PluginCommand<Plugin = Self>>> {
+        vec![Box::new(Implementation)]
     }
 }
 
-impl Plugin for Implementation {
-    fn signature(&self) -> Vec<PluginSignature> {
-        vec![PluginSignature::build("md")
+struct Implementation;
+
+impl SimplePluginCommand for Implementation {
+    type Plugin = MdPlugin;
+
+    fn signature(&self) -> PluginSignature {
+        PluginSignature::build("md")
             .usage("View md results")
             .required("markdown", SyntaxShape::String, "markdown to render")
             .category(Category::Experimental)
@@ -22,17 +27,16 @@ impl Plugin for Implementation {
                 description: "This is the example descripion".into(),
                 example: "some pipeline involving md".into(),
                 result: None,
-            }])]
+            }])
     }
 
     fn run(
         &self,
-        name: &str,
+        _config: &MdPlugin,
         _engine: &EngineInterface,
         call: &EvaluatedCall,
         _input: &Value,
     ) -> Result<Value, LabeledError> {
-        assert_eq!(name, "md");
         let find: Spanned<String> = call.req(0)?;
         let arg = find.item;
 
@@ -47,7 +51,7 @@ impl Plugin for Implementation {
 }
 
 fn main() {
-    serve_plugin(&mut Implementation::new(), MsgPackSerializer);
+    serve_plugin(&MdPlugin, MsgPackSerializer);
 }
 
 fn test0(arg: String, _span: Span) {
