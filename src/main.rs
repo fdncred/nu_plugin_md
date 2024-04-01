@@ -1,8 +1,8 @@
 use nu_plugin::{
-    serve_plugin, EngineInterface, EvaluatedCall, LabeledError, MsgPackSerializer, Plugin,
-    PluginCommand, SimplePluginCommand,
+    serve_plugin, EngineInterface, EvaluatedCall, MsgPackSerializer, Plugin, PluginCommand,
+    SimplePluginCommand,
 };
-use nu_protocol::{Category, PluginExample, PluginSignature, Span, Spanned, SyntaxShape, Value};
+use nu_protocol::{Category, Example, LabeledError, Signature, Span, Spanned, SyntaxShape, Value};
 use termimad::*;
 
 pub struct MdPlugin;
@@ -18,16 +18,26 @@ struct Implementation;
 impl SimplePluginCommand for Implementation {
     type Plugin = MdPlugin;
 
-    fn signature(&self) -> PluginSignature {
-        PluginSignature::build("md")
-            .usage("View md results")
+    fn name(&self) -> &str {
+        "md"
+    }
+
+    fn usage(&self) -> &str {
+        "View md results"
+    }
+
+    fn signature(&self) -> Signature {
+        Signature::build(PluginCommand::name(self))
             .required("markdown", SyntaxShape::String, "markdown to render")
             .category(Category::Experimental)
-            .plugin_examples(vec![PluginExample {
-                description: "This is the example descripion".into(),
-                example: "some pipeline involving md".into(),
-                result: None,
-            }])
+    }
+
+    fn examples(&self) -> Vec<Example> {
+        vec![Example {
+            description: "This is the example descripion".into(),
+            example: "some pipeline involving md".into(),
+            result: None,
+        }]
     }
 
     fn run(
