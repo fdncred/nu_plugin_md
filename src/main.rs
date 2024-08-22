@@ -26,7 +26,7 @@ impl SimplePluginCommand for Implementation {
         "md"
     }
 
-    fn usage(&self) -> &str {
+    fn description(&self) -> &str {
         "View md results"
     }
 
